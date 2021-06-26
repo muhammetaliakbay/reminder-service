@@ -126,6 +126,20 @@ describe("CSVTokenizer", () => {
             expect(await tokenizer.readRow(buffered)).eq(CSVEnd)
         })
 
+        it('should return correct cell values for each of multiple rows', async () => {
+            const reader = new StringReader(
+                'zzz,yyy,xxx\n' +
+                'a,bb,ccc\r\n' +
+                '0,"1",""""'
+            )
+            const buffered = new BufferedReader(reader)
+
+            expect(await tokenizer.readRow(buffered)).eql(['zzz', 'yyy', 'xxx'])
+            expect(await tokenizer.readRow(buffered)).eql(['a', 'bb', 'ccc'])
+            expect(await tokenizer.readRow(buffered)).eql(['0', '1', '"'])
+            expect(await tokenizer.readRow(buffered)).eq(CSVEnd)
+        })
+
         it('should return two empty cells for a line which has just a column separator character', async () => {
             const reader = new StringReader(',')
             const buffered = new BufferedReader(reader)
