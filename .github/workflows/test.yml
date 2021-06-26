@@ -18,3 +18,6 @@ jobs:
 
       - name: Run tests
         run: yarn test
+
+      - name: Run commservice's tests
+        run: yarn service schedule given/customers.csv --start-commservice
