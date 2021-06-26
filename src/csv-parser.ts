@@ -22,6 +22,10 @@ export class CSVParser<H extends string = string> {
     ) {
     }
 
+    close(): void {
+        this.source.close()
+    }
+
     private header: (H[] & Row) | undefined = undefined
 
     getHeader(): Row {
