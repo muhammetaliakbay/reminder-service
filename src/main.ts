@@ -2,16 +2,16 @@
 
 import * as yargs from "yargs";
 import {createReadStream} from "fs";
-import {StreamReader} from "./reader";
-import {BufferedReader} from "./buffered-reader";
-import {CSVTokenizer} from "./csv-tokenizer";
-import {CSVParser} from "./csv-parser";
+import {BufferedReader} from "./reader/buffered";
+import {CSVTokenizer} from "./csv/tokenizer";
+import {CSVParser} from "./csv/parser";
 import {parseSchedule} from "./schedule";
-import {ScheduleList} from "./schedule-list";
-import {Scheduler} from "./scheduler";
-import {CommserviceClient} from "./commservice-client";
+import {ScheduleList} from "./schedule/list";
+import {Scheduler} from "./schedule/scheduler";
+import {CommserviceClient} from "./commservice/client";
 import {Readable} from "stream";
-import {CommserviceEventEmitter, startCommservice} from "./commservice-starter";
+import {CommserviceEventEmitter, startCommservice} from "./commservice/starter";
+import {StreamReader} from "./reader/stream";
 
 let parser: CSVParser<"email"|"text"|"schedule">
 

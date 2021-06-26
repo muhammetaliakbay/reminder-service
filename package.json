@@ -1,10 +1,10 @@
 {
   "private": true,
   "name": "comservice-task",
-  "main": "dist/index.js",
+  "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
-    "test": "mocha --enable-source-maps --recursive dist/*.spec.js",
+    "test": "mocha --enable-source-maps dist/**/*.spec.js dist/*.spec.js",
     "service": "node --enable-source-maps ."
   },
   "dependencies": {

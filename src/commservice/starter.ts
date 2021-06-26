@@ -201,7 +201,7 @@ export function startCommservice(
     }
 
     const executablePath = path.join(
-        __dirname, '../given', `commservice.${variant}`
+        __dirname, '../../given', `commservice.${variant}`
     )
     const process = spawn(executablePath, {
         stdio: [null, "pipe", "pipe"]

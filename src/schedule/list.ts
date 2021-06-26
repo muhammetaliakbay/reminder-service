@@ -1,10 +1,4 @@
-import {ScheduleOffsets} from "./schedule";
-
-export interface Schedule {
-    offsets: ScheduleOffsets
-    email: string,
-    text: string
-}
+import {Schedule} from "./";
 
 export class ScheduleList {
     private list: Schedule[] = []

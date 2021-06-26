@@ -1,54 +1,31 @@
+import {End, Reader} from "./";
 import {Readable} from "stream";
-
-export const End: unique symbol = Symbol('End')
-export type End = typeof End;
-
-export interface Reader {
-    readCharacter(): Promise<string | End>
-    close(): void
-}
-
-export class StringReader implements Reader {
-    private offset = 0
-    private length: number
-    constructor(
-        private source: string
-    ) {
-        this.length = source.length
-    }
-
-    close() {}
-
-    async readCharacter() {
-        if (this.length === this.offset) {
-            return End
-        } else {
-            return this.source[this.offset ++]
-        }
-    }
-}
 
 export abstract class StreamReaderError extends Error {
     constructor(msg: string) {
         super(msg);
     }
 }
+
 export class ChunkTypeError extends StreamReaderError {
     constructor(type: string) {
         super("Expected string as the chunk type, received " + type);
     }
 }
+
 export class ConcurrentReadError extends StreamReaderError {
     constructor() {
         super("Another read operation is not yet completed");
     }
 }
+
 export class StreamReader implements Reader {
     private endPromise: Promise<void>;
-    private queue: {chunk: string, offset: number}[] = []
+    private queue: { chunk: string, offset: number }[] = []
     private queuedTotal = 0
     private queueCapacity = 4096
     private notifyCallback: undefined | (() => void)
+
     constructor(
         private source: Readable
     ) {
@@ -110,9 +87,9 @@ export class StreamReader implements Reader {
 
         const entry = this.queue[0]
         let char: string;
-        const offset = entry.offset ++;
+        const offset = entry.offset++;
         char = entry.chunk[offset]
-        this.queuedTotal --;
+        this.queuedTotal--;
         if (entry.offset === entry.chunk.length) {
             this.queue.splice(0, 1)
         }

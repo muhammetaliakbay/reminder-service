@@ -1,5 +1,5 @@
-import {CSVEnd, CSVTokenizer, Row} from "./csv-tokenizer";
-import {BufferedReader} from "./buffered-reader";
+import {CSVEnd, CSVTokenizer, Row} from "./tokenizer";
+import {BufferedReader} from "../reader/buffered";
 
 export class ParserError extends Error {
     constructor(msg: string) {

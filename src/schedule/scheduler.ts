@@ -1,4 +1,4 @@
-import {ScheduleList} from "./schedule-list";
+import {ScheduleList} from "./list";
 
 export type ScheduleRunner = (
     schedule: {

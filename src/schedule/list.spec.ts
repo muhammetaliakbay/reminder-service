@@ -1,6 +1,6 @@
-import {parseSchedule} from "./schedule";
+import {parseSchedule} from "./";
 import {expect} from "chai"
-import {ScheduleList} from "./schedule-list";
+import {ScheduleList} from "./list";
 
 describe('ScheduleList', () => {
 
@@ -35,7 +35,7 @@ describe('ScheduleList', () => {
 
     describe('put(schedule)', () => {
 
-        it('should not put the schedule having an empty offset link', async () => {
+        it('should not put the schedule having an empty offset list', async () => {
             const list = new ScheduleList()
 
             list.put({

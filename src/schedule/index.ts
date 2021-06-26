@@ -1,3 +1,9 @@
+export interface Schedule {
+    offsets: ScheduleOffsets
+    email: string,
+    text: string
+}
+
 export class ScheduleParsingError extends Error {
     constructor(msg: string) {
         super(msg);

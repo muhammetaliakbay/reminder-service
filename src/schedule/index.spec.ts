@@ -1,4 +1,4 @@
-import {InvalidOffsetsError, parseSchedule, ScheduleSyntaxError} from "./schedule";
+import {InvalidOffsetsError, parseSchedule, ScheduleSyntaxError} from "./";
 import {expect} from "chai"
 
 describe("parseSchedule(text)", () => {

@@ -1,7 +1,8 @@
-import {End, StringReader} from "./reader";
 import {expect, use} from "chai"
 import * as chaiAsPromised from "chai-as-promised"
-import {BufferedReader, UnableToPushEndError} from "./buffered-reader";
+import {BufferedReader, UnableToPushEndError} from "./buffered";
+import {StringReader} from "./string";
+import {End} from "./index";
 
 use(chaiAsPromised)
 

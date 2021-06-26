@@ -1,5 +1,5 @@
-import {BufferedReader} from "./buffered-reader";
-import {End} from "./reader";
+import {BufferedReader} from "../reader/buffered";
+import {End} from "../reader";
 
 export type Row = string[]
 

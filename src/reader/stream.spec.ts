@@ -1,14 +1,15 @@
-import {ChunkTypeError, End, StreamReader} from "./reader";
 import {expect, use} from "chai"
 import {createReadStream} from "fs";
 import * as path from "path";
 import * as chaiAsPromised from "chai-as-promised"
+import {ChunkTypeError, StreamReader} from "./stream";
+import {End} from "./index";
 
 use(chaiAsPromised)
 
 describe("StreamReader", () => {
     describe("readCharacter()", () => {
-        const testResourcesPath = path.join(__dirname, "../test-resources")
+        const testResourcesPath = path.join(__dirname, "../../test-resources")
 
         it('should return `End` for the first call if the file is empty', async () => {
             const stream = createReadStream(path.join(testResourcesPath, "empty.txt"))

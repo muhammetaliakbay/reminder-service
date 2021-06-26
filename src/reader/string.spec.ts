@@ -1,5 +1,6 @@
-import {End, StringReader} from "./reader";
 import {expect} from "chai"
+import {StringReader} from "./string";
+import {End} from "./index";
 
 describe("StringReader", () => {
     describe("readCharacter()", () => {

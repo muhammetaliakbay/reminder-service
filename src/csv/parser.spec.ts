@@ -1,9 +1,9 @@
-import {StringReader} from "./reader";
 import {expect, use} from "chai"
 import * as chaiAsPromised from "chai-as-promised"
-import {BufferedReader} from "./buffered-reader";
-import {CSVTokenizer} from "./csv-tokenizer";
-import {CSVParser, InvalidColumnsError, ParserError} from "./csv-parser";
+import {BufferedReader} from "../reader/buffered";
+import {CSVTokenizer} from "./tokenizer";
+import {CSVParser, InvalidColumnsError, ParserError} from "./parser";
+import {StringReader} from "../reader/string";
 
 use(chaiAsPromised)
 

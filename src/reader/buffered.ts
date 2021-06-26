@@ -1,4 +1,4 @@
-import {End, Reader} from "./reader";
+import {End, Reader} from "./";
 
 export class BufferedReaderError extends Error {
     constructor(msg: string) {
