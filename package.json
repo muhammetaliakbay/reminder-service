@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "comservice-task",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "mocha --enable-source-maps --recursive dist/*.spec.js",
+    "service": "node --enable-source-maps ."
+  },
+  "dependencies": {
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "mocha": "^9.0.1",
+    "chai-as-promised": "^7.1.1",
+    "@types/chai": "^4.2.19",
+    "@types/mocha": "^8.2.2",
+    "@types/chai-as-promised": "^7.1.4",
+    "typescript": "^4.3.4",
+    "@types/yargs": "^17.0.0",
+    "@types/node": "^15.12.4"
+  }
+}
