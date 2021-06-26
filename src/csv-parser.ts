@@ -7,6 +7,12 @@ export class ParserError extends Error {
     }
 }
 
+export class InvalidColumnsError extends ParserError {
+    constructor() {
+        super("Number of columns in the header and the row just red are not equal");
+    }
+}
+
 export type RowObject<H extends string = string> = {[header in H]: string}
 
 export class CSVParser<H extends string = string> {
@@ -67,7 +73,7 @@ export class CSVParser<H extends string = string> {
         if (row === CSVEnd) {
             return null
         } else if (header.length !== row.length) {
-            throw new ParserError("Number of columns in the header and the row just red are not equal")
+            throw new InvalidColumnsError()
         } else {
             return row
         }
