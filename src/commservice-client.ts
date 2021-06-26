@@ -1,7 +1,7 @@
 import * as http from "http";
 import {IncomingMessage} from "http";
 
-export class ComserviceClient {
+export class CommserviceClient {
     constructor(
         private host: string,
         private port: number

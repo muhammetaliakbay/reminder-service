@@ -9,7 +9,7 @@ import {CSVParser} from "./csv-parser";
 import {parseSchedule} from "./schedule";
 import {ScheduleList} from "./schedule-list";
 import {Scheduler} from "./scheduler";
-import {ComserviceClient} from "./comservice";
+import {CommserviceClient} from "./commservice-client";
 import {Readable} from "stream";
 
 let parser: CSVParser<"email"|"text"|"schedule">
@@ -92,7 +92,7 @@ yargs
             } finally {
                 parser.close()
             }
-            const client = new ComserviceClient(
+            const client = new CommserviceClient(
                 argv["commservice-host"],
                 argv["commservice-port"]
             )
