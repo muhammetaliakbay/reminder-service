@@ -11,6 +11,7 @@ import {ScheduleList} from "./schedule-list";
 import {Scheduler} from "./scheduler";
 import {CommserviceClient} from "./commservice-client";
 import {Readable} from "stream";
+import {CommserviceEventEmitter, startCommservice} from "./commservice-starter";
 
 let parser: CSVParser<"email"|"text"|"schedule">
 
@@ -71,48 +72,81 @@ yargs
         "schedule [csv-file]",
         "Schedule by reading given csv-file",
         args => args
+            .string("commservice-variant")
+            .boolean("start-commservice").default("start-commservice", false)
             .string("commservice-host").default("commservice-host", "127.0.0.1")
             .number("commservice-port").default("commservice-port", 9090),
         async argv => {
-            const list = new ScheduleList()
+            let commservice: CommserviceEventEmitter
+            if (argv["start-commservice"]) {
+                commservice = await startCommservice(
+                    argv["commservice-variant"] as any
+                )
+            }
+
             try {
-                while(true) {
-                    const row = await parser.readRowObject()
-                    if (row === null) {
-                        break
-                    } else {
-                        const schedule = parseSchedule(row.schedule)
-                        list.put({
-                            email: row.email,
-                            text: row.text,
-                            offsets: schedule
+                if (commservice) {
+                    await commservice.listening$
+                }
+
+                const list = new ScheduleList()
+                try {
+                    while(true) {
+                        const row = await parser.readRowObject()
+                        if (row === null) {
+                            break
+                        } else {
+                            const schedule = parseSchedule(row.schedule)
+                            list.put({
+                                email: row.email,
+                                text: row.text,
+                                offsets: schedule
+                            })
+                        }
+                    }
+                } finally {
+                    parser.close()
+                }
+                const client = new CommserviceClient(
+                    argv["commservice-host"],
+                    argv["commservice-port"]
+                )
+                const scheduler = new Scheduler(
+                    list,
+                    async ({email, text, offset}) => {
+                        const {paid} = await client.messages({
+                            email,
+                            text
                         })
+                        console.log({
+                            email,
+                            text,
+                            offset,
+                            paid
+                        })
+                        return paid
+                    }
+                )
+                await scheduler.run()
+            } finally {
+                if (commservice) {
+                    commservice.terminate()
+                    const result = await commservice.result$
+                    const fails = [
+                        ...result.sections.messageCount,
+                        ...result.sections.messageTimings
+                    ].filter(
+                        line => !line.passing
+                    )
+                    if (fails.length > 0) {
+                        console.error("Some tests are failed in commservice: ")
+                        for (const fail of fails) {
+                            console.error(fail.description)
+                        }
+                        process.exit(1)
                     }
                 }
-            } finally {
-                parser.close()
             }
-            const client = new CommserviceClient(
-                argv["commservice-host"],
-                argv["commservice-port"]
-            )
-            const scheduler = new Scheduler(
-                list,
-                async ({email, text, offset}) => {
-                    const {paid} = await client.messages({
-                        email,
-                        text
-                    })
-                    console.log({
-                        email,
-                        text,
-                        offset,
-                        paid
-                    })
-                    return paid
-                }
-            )
-            await scheduler.run()
         }
     )
 
