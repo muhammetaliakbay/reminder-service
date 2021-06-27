@@ -31,12 +31,12 @@ yarn service schedule given/customers.csv --start-commservice
 
 #### Check consistency
 ```bash
-service parse <csv-file> # Parse given csv-file to check its consistency
+yarn service parse <csv-file> # Parse given csv-file to check its consistency
 ```
 
 #### Schedule reminders
 ```bash
-service schedule <csv-file> # Schedule by reading given csv-file
+yarn service schedule <csv-file> # Schedule by reading given csv-file
     --start-commservice [boolean] # [default: false]
     --commservice-host  <string> # [default: "127.0.0.1"]
     --commservice-port  <number> # [default: 9090]
