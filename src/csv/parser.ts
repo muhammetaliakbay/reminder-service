@@ -22,6 +22,9 @@ export class CSVParser<H extends string = string> {
     ) {
     }
 
+    /**
+     * Closes the source reader.
+     */
     close(): void {
         this.source.close()
     }
@@ -35,6 +38,12 @@ export class CSVParser<H extends string = string> {
         return this.header
     }
 
+    /**
+     * Checks that if the headers, red or set, are valid. If all the column
+     * names which are specified by the parameter `columns` are present
+     * in the headers, then returns true, and false otherwise
+     * @param columns Column names to look for in headers
+     */
     hasHeaderColumns<HNEW extends H>(...columns: HNEW[]): this is CSVParser<HNEW> {
         const header = this.getHeader()
         return columns.every(
@@ -54,6 +63,12 @@ export class CSVParser<H extends string = string> {
         return this as any
     }
 
+    /**
+     * Reads next row as the header row, takes the cell contents as the column
+     * names. This method is useful when the header row is present in the CSV
+     * document, and can be used to load them instead of passing explicitly.
+     * @see `setHeader`
+     */
     async readHeader(): Promise<void> {
         if (this.header != undefined) {
             throw new ParserError("A header was already defined/red")
@@ -69,6 +84,13 @@ export class CSVParser<H extends string = string> {
         }
     }
 
+    /**
+     * Reads next row in the CSV document, and returns the cell contents
+     * as an array of strings. It also checks if the count of the cells
+     * are equal to the count of columns in header, to make sure that the
+     * row is valid. If no row left to be red in the document, then returns
+     * `null`.
+     */
     async readRow(): Promise<Row | null> {
         const header = this.getHeader()
         const row = await this.tokenizer.readRow(
@@ -83,6 +105,13 @@ export class CSVParser<H extends string = string> {
         }
     }
 
+    /**
+     * Does almost the same what `readRow` does, but it also builds an
+     * object by pairing corresponding column names and values of the cells
+     * in the row as keys and values. As how `readRow` behaves, it returns
+     * `null` if no row left to be red in the CSV document.
+     * @see `readRow`
+     */
     async readRowObject(): Promise<RowObject<H> | null> {
         const row = await this.readRow()
         if (row === null) {
