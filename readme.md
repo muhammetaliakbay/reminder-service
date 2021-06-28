@@ -49,6 +49,23 @@ yarn service schedule [csv-file]  # Schedule by reading given csv-file
 ```
 > **Note:** It is possible to run a commservice internally and check the test cases at the end of the execution by passing the argument: `--start-commservice`
 
+## How it works
+There are 2 main parts of reminder-service which are implemented in the project:
+* CSV Parser
+    * It consists of 2 internal parts, Readers and Tokenizer.
+      2 kind of reader is implemented, StringReader and StreamReader, also an additional one named BufferedReader is implemented and used (very crucial one) by the tokenizer.
+      The tokenizer reads the characters from the buffered reader to be evaluated. It is very important to use buffered reader's push-back functionality.
+    * The parser can work continuously without storing the rows in the memory, so it is possible to read and parse millions of rows with no memory issue.
+    * It also performs checks against the expected structure of the row, as the cell counts, and the column names.
+* Scheduler
+    * Handles the core logic of the challenge, stores the scheduled reminders into an internal list, which is sorted at the insert time by the offsets.
+    * Uses Javascript's `setTimeout` function as the time based task scheduler, but since it is also designed to execute the logic in a continuous manner,
+      it doesn't register more than one timeout at the same time, it uses only one. When a new reminder gets scheduled, it re-schedule the timeout for the earliest one.
+    * It needs to keep only non-fulfilled reminders in the memory, so the requirement of memory sources are only depends on the amount of non-fulfilled scheduled reminders.
+      This lets the service to handle the reminders in a continuous way, eg. supplying an endless CSV document from the standard input.
+
+> **Note:** It is possible to feed the service with an endless CSV document to operate it as a micro-service.
+
 ## Used Dependencies
 
 ### Yargs
