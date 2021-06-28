@@ -134,25 +134,26 @@ export class CommserviceEventEmitter extends EventEmitter {
             throw new Error('No empty line found after "Message Count" title in commservice\'s output')
         }
 
-        let messageTimingsTitleIndex = lines.indexOf("Message Timings", messageCountEnd + 1)
-        if (messageTimingsTitleIndex === -1) {
-            throw new Error('"Message Timings" title not found in commservice\'s output')
-        }
-        let messageTimingsStart = messageTimingsTitleIndex + 1
-        let messageTimingsEnd = lines.indexOf("", messageTimingsStart)
-        if (messageTimingsEnd === -1) {
-            throw new Error('No empty line found after "Message Timings" title in commservice\'s output')
-        }
-
         const messageCountSection = lines.slice(
             messageCountStart,
             messageCountEnd
         )
 
-        const messageTimingsSection = lines.slice(
-            messageTimingsStart,
-            messageTimingsEnd
-        )
+        let messageTimingsTitleIndex = lines.indexOf("Message Timings", messageCountEnd + 1)
+        let messageTimingsSection: string[] = []
+        if (messageTimingsTitleIndex !== -1) {
+            let messageTimingsStart = messageTimingsTitleIndex + 1
+            let messageTimingsEnd = lines.indexOf("", messageTimingsStart)
+            if (messageTimingsEnd === -1) {
+                throw new Error('No empty line found after "Message Timings" title in commservice\'s output')
+            }
+            messageTimingsSection = lines.slice(
+                messageTimingsStart,
+                messageTimingsEnd
+            )
+        } else {
+            messageTimingsSection = []
+        }
 
         return {
             sections: {
