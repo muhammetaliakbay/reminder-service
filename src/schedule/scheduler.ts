@@ -1,4 +1,5 @@
 import {ScheduleList} from "./list";
+import {Schedule} from "./index";
 
 /**
  * A type of function which is specified as a callback to
@@ -18,9 +19,9 @@ export type ScheduleRunner = (
  * by calling the specified runner.
  */
 export class Scheduler {
-    private start = Date.now()
+    private start: number
+    private list = new ScheduleList()
     constructor(
-        private list: ScheduleList,
         private runner: ScheduleRunner
     ) {
     }
@@ -47,6 +48,20 @@ export class Scheduler {
         }
 
         const offset = this.list.nextOffset()
+        if (this.start == undefined) {
+            if (offset !== 0) {
+                /* Do not start the execution of the reminders
+                 until the very first zero offset get scheduled.
+                * TODO: The case when there is no zero offset defined in the
+                *  supplied CSV document is not defined in the challenge's
+                *  document. Ask about it. */
+                return
+            }
+            /* Base offset starts at the first scheduled
+            * reminder is registered. */
+            this.start = Date.now()
+        }
+
         if (offset !== null) {
             /* If there is a pending reminder in the list, use its first offset
             * to calculate the time when the `runNext` method will be called. */
@@ -127,17 +142,28 @@ export class Scheduler {
     }
 
     /**
-     * Schedules the timer for the next reminder in the list and
-     * waits until all the reminders are fulfilled.
+     * Adds the scheduled reminders to the internal list, and
+     * sets the timeout for the next one which has the earliest
+     * offset compared to the rest.
+     * Note: This method can be called any time even after the
+     * last reminder has been fulfilled.
      */
-    run(): Promise<void> {
+    schedule(...schedules: Schedule[]): void {
+        if (this.list.put(...schedules)) {
+            this.updateNextOffset()
+        }
+    }
+
+    /**
+     * Waits until all the reminders are fulfilled.
+     */
+    waitComplete(): Promise<void> {
         return new Promise<void>(resolve => {
             /* Register completion callback to resolve the promise
             * when all the reminders are fulfilled. */
             this.completionListeners.push(
                 () => resolve(void 0)
             )
-            this.updateNextOffset()
             this.checkCompletion()
         })
     }

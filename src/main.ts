@@ -112,27 +112,6 @@ yargs
                     await commservice.listening$
                 }
 
-                /* Create a scheduled reminders list and fill of the entries,
-                * by reading the supplied CSV document until its end. */
-                const list = new ScheduleList()
-                try {
-                    while(true) {
-                        const row = await parser.readRowObject()
-                        if (row === null) {
-                            break
-                        } else {
-                            const schedule = parseSchedule(row.schedule)
-                            list.put({
-                                email: row.email,
-                                text: row.text,
-                                offsets: schedule
-                            })
-                        }
-                    }
-                } finally {
-                    parser.close()
-                }
-
                 /* Create an instance of `CommserviceClient` which will be
                 * used for communicating with commservice to send requests
                 * related to scheduled reminders. */
@@ -147,7 +126,6 @@ yargs
                 * commservice and returning the information in the response,
                 * which indicates whether it is paid. */
                 const scheduler = new Scheduler(
-                    list,
                     async ({email, text, offset}) => {
                         const {paid} = await client.messages({
                             email,
@@ -162,9 +140,27 @@ yargs
                         return paid
                     }
                 )
-                /* Schedule the reminder starting with the first one in the list. And
-                * wait until all of them are fulfilled. */
-                await scheduler.run()
+                /* Fill the scheduler of the entries by reading the supplied CSV document,
+                 until its end. */
+                try {
+                    while(true) {
+                        const row = await parser.readRowObject()
+                        if (row === null) {
+                            break
+                        } else {
+                            const schedule = parseSchedule(row.schedule)
+                            scheduler.schedule({
+                                email: row.email,
+                                text: row.text,
+                                offsets: schedule
+                            })
+                        }
+                    }
+                } finally {
+                    parser.close()
+                }
+                /* Wait until all of the scheduler reminders are fulfilled. */
+                await scheduler.waitComplete()
             } finally {
                 if (commservice) {
                     /* If a commservice is ran by the application at the start,
