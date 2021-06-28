@@ -29,17 +29,21 @@ export class ScheduleList {
     /**
      * Find correct positions (to keep the list well sorted) for each
      * given schedule entries, and place them in the list. The entries
-     * with empty reminder offset list will be ignored.
+     * with empty reminder offset list will be ignored. Returns true
+     * if any of the given schedules is not ignored and is added.
      * @param schedules The schedule entries to be placed in the list
      */
-    put(...schedules: Schedule[]) {
+    put(...schedules: Schedule[]): boolean {
+        let added = false;
         for (const schedule of schedules) {
             if (schedule.offsets.length > 0) {
+                added = true
                 const index = this.locate(schedule.offsets[0])
                 this.list.splice(index, 0, schedule)
                 this.total += schedule.offsets.length
             }
         }
+        return added
     }
 
     /**
