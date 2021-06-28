@@ -28,18 +28,24 @@ yarn service schedule given/customers.csv --start-commservice
 ```
 
 ### Commandline
+Both of the commands listed below are reading the CSV document from the file with the path specified by the argument just after the name of the command.
+It is also possible to let the reminder-service read the CSV document from standard input by not specifying any path.
+With this way, the commands can be piped, eg:
+```bash
+cat given/customers.csv | yarn service <command>
+```
 
 #### Check consistency
 ```bash
-yarn service parse <csv-file> # Parse given csv-file to check its consistency
+yarn service parse [csv-file] # Parse given csv-file to check its consistency
 ```
 
 #### Schedule reminders
 ```bash
-yarn service schedule <csv-file> # Schedule by reading given csv-file
+yarn service schedule [csv-file]  # Schedule by reading given csv-file
     --start-commservice [boolean] # [default: false]
-    --commservice-host  <string> # [default: "127.0.0.1"]
-    --commservice-port  <number> # [default: 9090]
+    --commservice-host  <string>  # [default: "127.0.0.1"]
+    --commservice-port  <number>  # [default: 9090]
 ```
 > **Note:** It is possible to run a commservice internally and check the test cases at the end of the execution by passing the argument: `--start-commservice`
 
